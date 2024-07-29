@@ -1,0 +1,24 @@
+{
+	"name": "test",
+	"module": "index.ts",
+	"type": "module",
+	"scripts": {
+		"start": "clear && bun run src/main.ts",
+		"dev": "clear && bun run src/main.ts --watch",
+		"build": "bun build src/main.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"chalk": "^5.3.0",
+		"cron": "^3.1.7",
+		"dotenv": "^16.4.5",
+		"joi": "^17.13.3",
+		"puppeteer": "^22.14.0",
+		"winston": "^3.13.1"
+	}
+}
