@@ -1,7 +1,7 @@
 import { Logger } from '@/logger';
 import puppeteer, { Browser, Page, type PuppeteerLaunchOptions } from 'puppeteer';
 
-const puppeteerOptions: PuppeteerLaunchOptions = { headless: false, slowMo: 50, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+const puppeteerOptions: PuppeteerLaunchOptions = { headless: false, slowMo: 50, args: [`--window-size=${1280},${720}`] };
 
 export class BrowserManager {
 	private readonly logger = new Logger('BrowserManager');
@@ -23,7 +23,11 @@ export class BrowserManager {
 
 		const browser = await this.getBrowser();
 
-		return await browser.newPage();
+		const page = await browser.newPage();
+
+		await page.setViewport({ width: 1920, height: 1080 });
+
+		return page;
 	}
 
 	public async closePage(page: Page): Promise<void> {

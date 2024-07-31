@@ -8,13 +8,15 @@ const logger = new Logger('Main');
 
 const main = async () => {
 	const logger = new Logger('Main');
-	const browserManager = new BrowserManager();
-	const browser = await browserManager.getBrowser();
+	logger.info('Starting the application');
 
-	const job = new CronJob(
-		// run every 2 hours
-		'0 0 */2 * * *',
+	new CronJob(
+		// run every 5 minutes
+		'0 0 */3 * * *',
 		async () => {
+			const browserManager = new BrowserManager();
+			const browser = await browserManager.getBrowser();
+
 			await scrapProducts(browser, productsUrls);
 
 			logger.info('Finished handling products');
@@ -26,6 +28,8 @@ const main = async () => {
 		true, // start
 		'America/Los_Angeles' // timeZone
 	);
+
+	logger.info('Application started');
 };
 
 main().catch((error) => {

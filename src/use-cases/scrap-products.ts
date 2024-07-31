@@ -7,7 +7,7 @@ const logger = new Logger('Navigate');
 
 export const scrapProducts = async (browser: Browser, urls: string[]) => {
 	const page = await browser.newPage();
-	await page.setViewport({ width: 1080, height: 1024 });
+	await page.setViewport({ width: 1280, height: 720 });
 	await setMiamiZipCode(page);
 
 	const db = Database.getInstance();
@@ -15,13 +15,22 @@ export const scrapProducts = async (browser: Browser, urls: string[]) => {
 	const products: Product[] = [];
 
 	for (const url of urls) {
-		const { productName, productPrice } = await handleProduct(page, url);
-
-		products.push({ productName, price: productPrice, url });
+		try {
+			const { productName, productPrice } = await handleProduct(page, url);
+			products.push({ productName, price: productPrice, url });
+		} catch (error: any) {
+			logger.error(`Failed to scrape product from ${url}: ${error.message}`);
+		}
 	}
 
+	if (products.length === 0) logger.error('No products to save to the database');
+
 	logger.info('Saving products to the database');
-	db.insertProducts(products);
+	try {
+		db.insertProducts(products);
+	} catch (dbError: any) {
+		logger.error(`Failed to save products to the database: ${dbError.message}`);
+	}
 };
 
 const handleProduct = async (page: Page, url: string) => {
