@@ -11,9 +11,11 @@ const main = async () => {
 	logger.info('Starting the application');
 
 	new CronJob(
-		// run every 5 minutes
-		'0 0 */3 * * *',
+		// run at 9:00 AM every day
+		'0 9 * * *',
 		async () => {
+			logger.info('Beginning search at 9:00 AM');
+
 			const browserManager = new BrowserManager();
 			const browser = await browserManager.getBrowser();
 
@@ -27,6 +29,27 @@ const main = async () => {
 		null, // onComplete
 		true, // start
 		'America/Los_Angeles' // timeZone
+	);
+
+	// new job to run at 9:00 PM every day
+	new CronJob(
+		'0 21 * * *',
+		async () => {
+			logger.info('Beginning search at 9:00 PM');
+
+			const browserManager = new BrowserManager();
+			const browser = await browserManager.getBrowser();
+
+			await scrapProducts(browser, productsUrls);
+
+			logger.info('Finished handling products');
+
+			logger.info('Closing browser instance');
+			await browser.close();
+		},
+		null,
+		true,
+		'America/Los_Angeles'
 	);
 
 	logger.info('Application started');
